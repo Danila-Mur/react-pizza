@@ -1,18 +1,24 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSort } from '../redux/slices/filterSlice';
 
-function Sort({ value, onClickSort }) {
+const list = [
+    { name: 'популярности (DESC)', sortProperty: 'rating' },
+    { name: 'популярности (ASC)', sortProperty: '-rating' },
+    { name: 'цене (DESC)', sortProperty: 'price' },
+    { name: 'цене (ASC)', sortProperty: '-price' },
+    { name: 'алфавиту (DESC)', sortProperty: 'title' },
+    { name: 'алфавиту (ASC)', sortProperty: '-title' },
+];
+
+function Sort() {
+    const dispatch = useDispatch();
+    const sort = useSelector((state) => state.filterReducer.sort);
+
     const [isVisible, setIsVisible] = useState(false);
-    const list = [
-        { name: 'популярности (DESC)', sortProperty: 'rating' },
-        { name: 'популярности (ASC)', sortProperty: '-rating' },
-        { name: 'цене (DESC)', sortProperty: 'price' },
-        { name: 'цене (ASC)', sortProperty: '-price' },
-        { name: 'алфавиту (DESC)', sortProperty: 'title' },
-        { name: 'алфавиту (ASC)', sortProperty: '-title' },
-    ];
 
-    const onClickSortItem = (i) => {
-        onClickSort(i);
+    const onClickSortItem = (obj) => {
+        dispatch(setSort(obj));
         setIsVisible(false);
     };
 
@@ -33,7 +39,7 @@ function Sort({ value, onClickSort }) {
                 </svg>
                 <b>Сортировка по:</b>
                 <span onClick={() => setIsVisible(!isVisible)}>
-                    {value.name}
+                    {sort.name}
                 </span>
             </div>
             {isVisible && (
@@ -43,7 +49,7 @@ function Sort({ value, onClickSort }) {
                             <li
                                 key={i}
                                 className={
-                                    value.sortProperty === obj.sortProperty
+                                    sort.sortProperty === obj.sortProperty
                                         ? 'active'
                                         : ''
                                 }
